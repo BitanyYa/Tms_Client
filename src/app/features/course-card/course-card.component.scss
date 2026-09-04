@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.course-card {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.course-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.course-code,
+.capacity {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.course-code {
+  color: #2563eb;
+}
+
+.capacity {
+  color: #15803d;
+  text-align: right;
+}
+
+.capacity.full {
+  color: #b91c1c;
+}
+
+h3 {
+  margin: 0 0 0.75rem;
+  color: #1e293b;
+}
+
+.enrollment {
+  margin: 0;
+  color: #64748b;
+}

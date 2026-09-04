@@ -1,0 +1,111 @@
+<div class="enrollment-page">
+  <h1>Course Enrollment</h1>
+
+  @if (submitted()) {
+    <div class="success" role="status">
+      Enrollment submitted successfully.
+      <p>Check the browser console to see the payload.</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-field">
+        <label for="studentId">Student ID</label>
+
+        <input
+          id="studentId"
+          formControlName="studentId"
+          placeholder="e.g. STU-1234"
+        />
+
+        @if (
+          form.controls.studentId.touched &&
+          form.controls.studentId.invalid
+        ) {
+          <span class="error">
+            Enter a valid Student ID (format: STU-0000)
+          </span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="courseId">Course ID</label>
+
+        <input
+          id="courseId"
+          formControlName="courseId"
+          placeholder="e.g. 1"
+        />
+
+        @if (
+          form.controls.courseId.touched &&
+          form.controls.courseId.invalid
+        ) {
+          <span class="error">
+            Course ID is required
+          </span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="term">Term</label>
+
+        <input
+          id="term"
+          formControlName="term"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="notes">Notes (optional)</label>
+
+        <textarea
+          id="notes"
+          formControlName="notes"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <section class="backup-section">
+        <h2>Backup Courses</h2>
+
+        @for (backup of backups.controls; track $index) {
+          <div class="backup-row">
+            <input
+              [formControl]="backup"
+              [placeholder]="'Backup course ' + ($index + 1)"
+            />
+
+            <button
+              type="button"
+              (click)="removeBackup($index)"
+            >
+              Remove
+            </button>
+
+            @if (backup.touched && backup.invalid) {
+              <span class="error">
+                Backup course is required
+              </span>
+            }
+          </div>
+        }
+
+        <button
+          type="button"
+          (click)="addBackup()"
+        >
+          Add Backup Course
+        </button>
+      </section>
+
+      <hr />
+
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        Confirm Enrollment
+      </button>
+    </form>
+  }
+</div>
