@@ -4,24 +4,14 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () =>
-      import('./features/student-dashboard/student-dashboard.component')
-        .then((m) => m.StudentDashboardComponent),
+      import('./features/instructor-dashboard/instructor-dashboard')
+        .then(m => m.InstructorDashboardComponent)
   },
-//   {
-//     path: 'courses/:id',
-//     loadComponent: () =>
-//       import('./features/course-detail/course-detail.component')
-//         .then((m) => m.CourseDetailComponent),
-//   },
   {
-    path: 'enroll',
+    path: 'enrollments',
     loadComponent: () =>
-      import('./features/enrollment-form/enrollment-form.component')
-        .then((m) => m.EnrollmentFormComponent),
+      import('./features/enrollment-list/enrollment-list.component')
+        .then(m => m.EnrollmentListComponent)
   },
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
-  },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
 ];
