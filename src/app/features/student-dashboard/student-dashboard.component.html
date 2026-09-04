@@ -1,1 +1,64 @@
-<p>student-dashboard works!</p>
+<div class="dashboard">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Student Portal</p>
+      <h1>Course Dashboard</h1>
+      <p>Browse the courses currently available for enrollment.</p>
+    </div>
+
+    <a routerLink="/enroll" class="enroll-link">
+      Enroll in a Course
+    </a>
+  </header>
+
+  <section class="courses-section">
+    <div class="section-header">
+      <p class="eyebrow">Available Courses</p>
+      <h2>Course Catalog</h2>
+    </div>
+
+    @if (coursesResource.isLoading()) {
+      <div class="state-card">
+        <p>Fetching courses from the server...</p>
+      </div>
+    }
+
+    @else if (coursesResource.error()) {
+      <div class="state-card error">
+        <h3>Unable to load courses</h3>
+        <p>
+          We couldn't retrieve the course catalog.
+          Make sure the TMS API is running.
+        </p>
+      </div>
+    }
+
+    @else {
+      <div class="course-grid">
+        @for (course of coursesResource.value() ?? []; track course.id) {
+          <article class="course-card">
+            <p class="course-code">{{ course.code }}</p>
+
+            <h3>{{ course.title }}</h3>
+
+            <div class="course-info">
+              <span>
+                Capacity: {{ course.maxCapacity }}
+              </span>
+
+              <span>
+                Enrolled: {{ course.enrollmentCount }}
+              </span>
+            </div>
+          </article>
+        }
+
+        @empty {
+          <div class="state-card">
+            <p>No courses are available at the moment.</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</div>

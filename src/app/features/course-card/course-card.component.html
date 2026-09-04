@@ -1,0 +1,13 @@
+<article class="course-card">
+  <div class="course-card-header">
+    <span class="course-code">{{ course().code }}</span>
+    <span class="capacity" [class.full]="availableSeats === 0">
+      {{ availableSeats === 0 ? 'Full' : availableSeats + ' seats left' }}
+    </span>
+  </div>
+
+  <h3>{{ course().title }}</h3>
+  <p class="enrollment">
+    {{ course().enrollmentCount }} of {{ course().maxCapacity }} students enrolled
+  </p>
+</article>
