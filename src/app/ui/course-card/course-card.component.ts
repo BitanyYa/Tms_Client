@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Course } from '../../models/course.model';
+import { Course } from '../../Models/course.model';
 
 @Component({
   selector: 'tms-course-card',
