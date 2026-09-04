@@ -1,13 +1,9 @@
 export interface Course {
-  id: string;
+  id: number;
   code: string;
   title: string;
   maxCapacity: number;
   enrollmentCount: number;
-}
-
-export interface CourseDetail extends Course {
-  description?: string;
 }
 
 export interface PagedResponse<T> {
@@ -18,4 +14,14 @@ export interface PagedResponse<T> {
   totalPages: number;
   hasPrevious: boolean;
   hasNext: boolean;
+}
+
+export interface CourseLink {
+  href: string;
+  rel: string;
+  method: string;
+}
+
+export interface CourseDetail extends Course {
+  links: readonly CourseLink[];
 }
