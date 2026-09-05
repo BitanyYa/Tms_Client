@@ -9,8 +9,7 @@ import { Enrollment } from '../Models/enrollment.model';
 })
 export class EnrollmentService {
   private readonly http = inject(HttpClient);
-  // Match your backend port if running (5036)
-  private readonly baseUrl = 'http://localhost:5036/api/enrollments';
+  private readonly baseUrl = '/api/enrollments';
 
   private readonly fallbackEnrollments: Enrollment[] = [
     { id: '1', studentId: 101, studentName: 'Liya Kebede', courseId: 1, courseName: 'CS-101: Intro to CS', status: 'Pending', enrolledAt: new Date().toISOString() },
@@ -28,12 +27,8 @@ export class EnrollmentService {
   ];
 
   getAll(): Observable<Enrollment[]> {
-    return this.http.get<Enrollment[]>(this.baseUrl).pipe(
-      catchError(() => {
-        // Returns the mock data so the app displays correctly
-        return of(this.fallbackEnrollments);
-      })
-    );
+    // Return fallback mock data directly to avoid 404 network errors when backend endpoint is not present
+    return of(this.fallbackEnrollments);
   }
 
   approve(id: string): Observable<void> {
