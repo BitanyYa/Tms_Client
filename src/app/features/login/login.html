@@ -1,0 +1,53 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>TMS Identity Sign-In</h2>
+      <p>Secure HttpOnly Cookie & XSRF Handshake</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="error-banner">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Enter username (e.g. instructor or admin)"
+        />
+        @if (loginForm.get('username')?.touched && loginForm.get('username')?.invalid) {
+          <span class="field-error">Username is required</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter password"
+        />
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+          <span class="field-error">Password is required</span>
+        }
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid || isSubmitting()"
+        class="login-btn">
+        @if (isSubmitting()) {
+          Signing in...
+        } @else {
+          Sign In
+        }
+      </button>
+    </form>
+  </div>
+</div>
