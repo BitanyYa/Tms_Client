@@ -5,15 +5,33 @@
       <span class="brand-name">Training Management System</span>
     </div>
 
-    <nav class="app-nav" aria-label="Main navigation">
-      <a routerLink="/dashboard" routerLinkActive="active">
-        Dashboard
-      </a>
+    @if (authService.isAuthenticated()) {
+      <nav class="app-nav" aria-label="Main navigation">
+        <a routerLink="/dashboard" routerLinkActive="active">
+          Dashboard
+        </a>
 
-      <a routerLink="/enrollments" routerLinkActive="active">
-        Enrollments
-      </a>
-    </nav>
+        <a routerLink="/enrollments" routerLinkActive="active">
+          Enrollments
+        </a>
+
+        <a routerLink="/grade-submission" routerLinkActive="active">
+          Grade Submission
+        </a>
+      </nav>
+
+      <div class="user-profile-widget">
+        <span class="user-name">{{ authService.user()?.displayName }}</span>
+        <span class="user-role-badge">{{ authService.user()?.role }}</span>
+        <button type="button" class="logout-btn" (click)="onLogout()">
+          Logout
+        </button>
+      </div>
+    } @else {
+      <div class="auth-action">
+        <a routerLink="/login" class="login-link">Sign In</a>
+      </div>
+    }
   </header>
 
   <main class="app-content">
