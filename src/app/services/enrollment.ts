@@ -17,23 +17,20 @@ export class EnrollmentService {
     { id: '3', studentId: 103, studentName: 'Abeba Bikila', courseId: 1, courseName: 'CS-101: Intro to CS', status: 'Approved', enrolledAt: new Date().toISOString() },
     { id: '4', studentId: 104, studentName: 'Yonas Tesfaye', courseId: 3, courseName: 'MAT-101: Calculus I', status: 'Approved', enrolledAt: new Date().toISOString() },
     { id: '5', studentId: 105, studentName: 'Sara Mengistu', courseId: 2, courseName: 'CS-201: Data Structures', status: 'Rejected', enrolledAt: new Date().toISOString() },
-    { id: '6', studentId: 106, studentName: 'Biruk Hailu', courseId: 1, courseName: 'CS-101: Intro to CS', status: 'Pending', enrolledAt: new Date().toISOString() },
-    { id: '7', studentId: 107, studentName: 'Hellen Tadesse', courseId: 3, courseName: 'MAT-101: Calculus I', status: 'Pending', enrolledAt: new Date().toISOString() },
-    { id: '8', studentId: 108, studentName: 'Natnael Assefa', courseId: 2, courseName: 'CS-201: Data Structures', status: 'Approved', enrolledAt: new Date().toISOString() },
-    { id: '9', studentId: 109, studentName: 'Kalkidan Girma', courseId: 1, courseName: 'CS-101: Intro to CS', status: 'Pending', enrolledAt: new Date().toISOString() },
-    { id: '10', studentId: 110, studentName: 'Ephrem Alemu', courseId: 3, courseName: 'MAT-101: Calculus I', status: 'Approved', enrolledAt: new Date().toISOString() },
-    { id: '11', studentId: 111, studentName: 'Selamawit Desta', courseId: 1, courseName: 'CS-101: Intro to CS', status: 'Pending', enrolledAt: new Date().toISOString() },
-    { id: '12', studentId: 112, studentName: 'Tewodros Kassahun', courseId: 2, courseName: 'CS-201: Data Structures', status: 'Approved', enrolledAt: new Date().toISOString() }
+    { id: '6', studentId: 106, studentName: 'Biruk Hailu', courseId: 1, courseName: 'CS-101: Intro to CS', status: 'Pending', enrolledAt: new Date().toISOString() }
   ];
 
   getAll(): Observable<Enrollment[]> {
-    // Return fallback mock data directly to avoid 404 network errors when backend endpoint is not present
-    return of(this.fallbackEnrollments);
+    return this.http.get<Enrollment[]>(this.baseUrl).pipe(
+      catchError(() => of(this.fallbackEnrollments))
+    );
+  }
+
+  updateStatus(id: string, status: 'Pending' | 'Approved' | 'Rejected'): Observable<Enrollment> {
+    return this.http.put<Enrollment>(`${this.baseUrl}/${id}/status`, { status });
   }
 
   approve(id: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${id}/approve`, {}).pipe(
-      catchError(() => of(void 0))
-    );
+    return this.http.post<void>(`${this.baseUrl}/${id}/approve`, {});
   }
 }

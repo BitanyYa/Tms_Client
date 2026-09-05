@@ -30,10 +30,20 @@ export const EnrollmentStore = signalStore(
     pendingCount: computed(
       () => store.entities().filter((e) => e.status === 'Pending').length
     ),
+    approvedCount: computed(
+      () => store.entities().filter((e) => e.status === 'Approved').length
+    ),
+    rejectedCount: computed(
+      () => store.entities().filter((e) => e.status === 'Rejected').length
+    ),
   })),
 
   // Pillar 3: Methods via rxMethod + RxJS streams
   withMethods((store, api = inject(EnrollmentService), sync = inject(LiveSyncService)) => ({
+    clearError(): void {
+      patchState(store, { error: null });
+    },
+
     listenForLiveUpdates: rxMethod<void>(
       (trigger$) =>
         trigger$.pipe(
@@ -59,7 +69,7 @@ export const EnrollmentStore = signalStore(
             catchError((err) => {
               patchState(store, {
                 isLoading: false,
-                error: err.message ?? 'Failed to load enrollments',
+                error: err.message || 'Failed to load enrollments',
               });
               return EMPTY;
             })
@@ -68,32 +78,37 @@ export const EnrollmentStore = signalStore(
       )
     ),
 
-    approveEnrollment: rxMethod<string>(
+    // Module 10 Session 3: Full-Stack Optimistic Update with Automatic Rollback
+    updateStatusOptimistic: rxMethod<{ id: string; status: 'Pending' | 'Approved' | 'Rejected' }>(
       pipe(
-        tap((id) => {
-          // 1. Optimistic Update: instantly set status to "Approved"
+        concatMap(({ id, status }) => {
+          const currentEntity = store.entityMap()[id];
+          if (!currentEntity) return EMPTY;
+
+          const previousStatus = currentEntity.status;
+
+          // Step 1: Immediate Optimistic Update in SignalStore
           patchState(
             store,
-            updateEntity({ id, changes: { status: 'Approved' } })
+            updateEntity({ id, changes: { status } }),
+            { error: null }
           );
-        }),
-        concatMap((id) =>
-          api.approve(id).pipe(
+
+          // Step 2: Dispatch API Request
+          return api.updateStatus(id, status).pipe(
             catchError((err) => {
-              // 2. Rollback on failure: revert status back to "Pending"
+              // Step 3: Optimistic Rollback on Server Error
+              console.warn(`[Optimistic Rollback] Reverting enrollment #${id} to ${previousStatus}`);
               patchState(
                 store,
-                updateEntity({ id, changes: { status: 'Pending' } })
+                updateEntity({ id, changes: { status: previousStatus } }),
+                { error: err.message || `Rollback: Could not update enrollment status.` }
               );
-              patchState(store, {
-                error:
-                  'Server rejected the approval. Check enrollment constraints.',
-              });
               return EMPTY;
             })
-          )
-        )
+          );
+        })
       )
-    ),
+    )
   }))
 );
