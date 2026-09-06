@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { roleGuard } from './guards/role.guard';
+import { pendingChangesGuard } from './guards/pending-changes.guard';
 
 export const routes: Routes = [
   {
@@ -10,7 +12,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard(['Instructor', 'Admin'])],
     loadComponent: () =>
       import('./features/instructor-dashboard/instructor-dashboard')
         .then(m => m.InstructorDashboardComponent)
@@ -24,7 +26,8 @@ export const routes: Routes = [
   },
   {
     path: 'grade-submission',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard(['Instructor', 'Admin'])],
+    canDeactivate: [pendingChangesGuard],
     loadComponent: () =>
       import('./features/grade-submission/grade-submission')
         .then(m => m.GradeSubmissionComponent)
