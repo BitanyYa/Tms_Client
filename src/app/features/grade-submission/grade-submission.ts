@@ -10,6 +10,7 @@ import { Subject } from 'rxjs';
 import { exhaustMap, finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GradeService, GradePayload } from '../../services/grade';
+import { HasUnsavedChanges } from '../../guards/pending-changes.guard';
 
 @Component({
   selector: 'tms-grade-submission',
@@ -26,7 +27,7 @@ import { GradeService, GradePayload } from '../../services/grade';
   templateUrl: './grade-submission.html',
   styleUrls: ['./grade-submission.scss']
 })
-export class GradeSubmissionComponent {
+export class GradeSubmissionComponent implements HasUnsavedChanges {
   private readonly api = inject(GradeService);
   private readonly fb = inject(FormBuilder);
 
@@ -58,12 +59,17 @@ export class GradeSubmissionComponent {
       )
       .subscribe({
         next: (result) => {
+          this.gradeForm.markAsPristine();
           this.submissionStatus.set(`Grade saved successfully! Record ID: ${result.id}`);
         },
         error: (err) => {
           this.submissionStatus.set(`Submission failed: ${err.message || 'Server error'}`);
         }
       });
+  }
+
+  hasUnsavedChanges(): boolean {
+    return this.gradeForm.dirty && !this.isSubmitting();
   }
 
   onSubmit(): void {
